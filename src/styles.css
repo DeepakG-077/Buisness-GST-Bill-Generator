@@ -90,3 +90,14 @@ textarea{min-height:68px;resize:vertical}
 .preview-totals>div{height:38px;min-height:38px;padding:5px 6px}
 .preview-words .words-text b{white-space:nowrap}
 .preview-words .words-text span{display:inline}
+
+.po-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.po-toggle input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}

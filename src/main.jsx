@@ -118,6 +118,8 @@ function App() {
     number: getInvoiceNo(),
     date: today(),
     service: "Painting Services",
+    poNo: "",
+    includePoNo: false,
     cgst: 9,
     sgst: 9,
   });
@@ -228,7 +230,8 @@ const headerH = 15.0, rowH = 10.2;
       const d = invoice.date ? new Date(invoice.date + "T00:00:00") : new Date();
       const dateStr = d.toLocaleDateString("en-GB", { day:"2-digit", month:"short", year:"numeric" });
       text(dateStr, billX+102, billY+23.6, 7.9, true);
-      text(invoice.service, billX+102, billY+29.7, 7.9, true);
+      text(invoice.service, billX+102, billY+27.6, 7.9, true);
+      if (invoice.includePoNo && invoice.poNo?.trim()) text(`PO No. ${invoice.poNo.trim()}`, billX+102, billY+32.2, 7.2, true);
     };
 
     const drawTableHeader = (y) => {
@@ -408,7 +411,7 @@ const headerH = 15.0, rowH = 10.2;
   const reset = () => {
     setItems([makeItem()]);
     setCustomer({ name:"", address:"", gstin:"" });
-    setInvoice({ number:getInvoiceNo(), date:today(), service:"Painting Services", cgst:9, sgst:9 });
+    setInvoice({ number:getInvoiceNo(), date:today(), service:"Painting Services", poNo:"", includePoNo:false, cgst:9, sgst:9 });
     setPreviewPage(0);
   };
 
@@ -432,6 +435,8 @@ const headerH = 15.0, rowH = 10.2;
           <div className="grid two">
             <label>Invoice Number<input value={invoice.number} onChange={e=>setInvoice({...invoice,number:e.target.value})}/></label>
             <label>Date<input type="date" value={invoice.date} onChange={e=>setInvoice({...invoice,date:e.target.value})}/></label>
+            <label className="po-toggle"><input type="checkbox" checked={invoice.includePoNo} onChange={e=>setInvoice({...invoice,includePoNo:e.target.checked,poNo:e.target.checked ? invoice.poNo : ""})}/> Include PO No.</label>
+            {invoice.includePoNo && <label>PO Number<input value={invoice.poNo} placeholder="Enter PO number" onChange={e=>setInvoice({...invoice,poNo:e.target.value})}/></label>}
           </div>
 
           <div className="grid two">
@@ -504,7 +509,7 @@ const headerH = 15.0, rowH = 10.2;
               <div className="preview-overlay">
                 <div className="preview-bill">
                   <div><b>Bill To</b><strong>{customer.name || "Customer Name"}</strong><span>{customer.address || "Customer Address"}</span></div>
-                  <div><b>INVOICE</b><strong>Invoice #{invoice.number}</strong><strong>GSTIN No. {business.gstin}</strong><strong>{invoice.date}</strong><strong>{invoice.service}</strong></div>
+                  <div><b>INVOICE</b><strong>Invoice #{invoice.number}</strong><strong>GSTIN No. {business.gstin}</strong><strong>{invoice.date}</strong><strong>{invoice.service}</strong>{invoice.includePoNo && invoice.poNo?.trim() && <strong>PO No. {invoice.poNo.trim()}</strong>}</div>
                 </div>
                 <div className="preview-table">
                   <div className="preview-row head"><span>SR.NO.</span><span>PARTICULARS</span><span>QNTY</span><span>UNIT</span><span>RATE</span><span>Amount</span></div>
